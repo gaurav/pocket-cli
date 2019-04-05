@@ -37,11 +37,12 @@ def format_article(article, header=None, footer=None, line=False):
     if line:
         content += '{}\n'.format('=' * (get_terminal_size()[0]-1))
 
-    content += '{} - {}\nReading Time: {} Mins\nURL: {}\n'.format(
+    content += '{} - {}\nReading Time: {} Mins\nURL: {}\nPocket URL: https://app.getpocket.com/read/{}\n'.format(
         article['id'],
         article['title'] if article['title'] else '(No Title)',
         article['reading_time'],
-        article['url']
+        article['url'],
+        article['id']
     )
 
     if footer:
