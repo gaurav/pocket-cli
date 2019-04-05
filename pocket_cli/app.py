@@ -70,11 +70,13 @@ class PocketApp:
         except PocketException as e:
             raise_from(self._check_exception(e), e)
 
-    def get_articles(self, limit=None, order=None):
+    def get_articles(self, limit=None, order=None, min_time=None):
         if self._storage.is_empty():
             self.fetch_articles(True)
 
         articles = self._storage.read(limit, order)
+        if min_time is not None:
+            articles = filter(lambda x: int(x['reading_time']) >= min_time, articles)
         sort_field = self._configs.get('sort_field')
         if not sort_field:
             sort_field = 'reading_time'

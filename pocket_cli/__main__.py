@@ -170,8 +170,11 @@ def read(item_id, open_origin, archive):
 @click.option('--browser', '-b', is_flag=True,
               default=False,
               help='Open in browser')
-def random_article(browser, archive):
-    articles = pocket_app.get_articles()
+@click.option('--minimum', '-m', type=int,
+              default=None,
+              help='Minimum reading time')
+def random_article(browser, archive, minimum):
+    articles = pocket_app.get_articles(min_time=minimum)
     article = random.choice(articles)
 
     print(format_article(article, header='Selected Article', line=True))
