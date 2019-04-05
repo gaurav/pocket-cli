@@ -114,6 +114,33 @@ def list_articles(order):
     output_articles(articles)
 
 
+@click.command(name='distribution')
+def distribution_of_reading_times():
+    try:
+        articles = pocket_app.get_articles(order='asc')
+    except AppNotConfigured:
+        app_not_configured()
+        return
+    except AppException as e:
+        exception_occured(e)
+        return
+
+    if not articles:
+        print('Articles index is empty,'
+              'run pocket-cli fetch to index your articles')
+        return
+
+    # Accumulate article reading times.
+    reading_times = list(map(lambda x: int(x['reading_time']), articles))
+    unknown_times = list(filter(lambda x: x == -1, reading_times))
+    print('Unknown: {} articles'.format(len(unknown_times)))
+
+    # Count the articles by 3s.
+    for time in range(0, max(reading_times)):
+        times_in_range = list(filter(lambda x: x == time, reading_times))
+        if len(times_in_range) > 0:
+            print('{}: {} articles'.format(time, len(times_in_range)))
+
 @click.command()
 @click.argument('search')
 @click.option('--state', '-s',
@@ -236,6 +263,7 @@ def exception_occured(exception):
 main.add_command(configure)
 main.add_command(add_article)
 main.add_command(list_articles)
+main.add_command(distribution_of_reading_times)
 main.add_command(search)
 main.add_command(random_article)
 main.add_command(fetch)
