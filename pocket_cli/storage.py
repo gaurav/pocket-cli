@@ -38,7 +38,7 @@ class Storage:
 
             dict_writer.writerows(self._encode_data(data))
 
-    def read(self, limit=10, order='asc'):
+    def read(self, order='asc'):
         index = []
 
         if not os.path.exists(self._filename):
@@ -54,16 +54,11 @@ class Storage:
             for row in reader:
                 index.append(row)
 
-                if order == 'asc':
-                    row_counter += 1
-
-                if row_counter == limit:
-                    break
-
+        # Reverse the list if we need to order it desc.
         if order == 'desc':
             index = index[::-1]
 
-        return index[0:limit]
+        return index
 
     def clear(self):
         if os.path.exists(self._filename):

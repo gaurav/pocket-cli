@@ -93,14 +93,12 @@ def add_article(url, title, tags):
 
 
 @click.command(name='list')
-@click.option('--limit', '-l', default=10,
-              help='Number of items to list')
 @click.option('--order', '-o', default='asc',
               type=click.Choice(['asc', 'desc']),
               help='Order of items to return')
-def list_articles(limit, order):
+def list_articles(order):
     try:
-        articles = pocket_app.get_articles(limit, order)
+        articles = pocket_app.get_articles(order)
     except AppNotConfigured:
         app_not_configured()
         return
@@ -215,24 +213,12 @@ def output_articles(articles):
         print('No articles found')
         return
 
-    try:
-        pager = subprocess.Popen(['less'],
-                                 stdin=subprocess.PIPE,
-                                 stdout=sys.stdout)
-        for article in articles:
-            if int(article['reading_time']) <= 0:
-                article['reading_time'] = 'Unknown'
-            content = format_article(article, line=True)
+    for article in articles:
+        if int(article['reading_time']) <= 0:
+            article['reading_time'] = 'Unknown'
+        content = format_article(article, line=True)
 
-            if six.PY3:
-                content = bytearray(content, 'utf-8')
-
-            pager.stdin.write(content)
-
-        pager.stdin.close()
-        pager.wait()
-    except (KeyboardInterrupt, ValueError):
-        pass
+        print(content)
 
 
 def app_not_configured():
