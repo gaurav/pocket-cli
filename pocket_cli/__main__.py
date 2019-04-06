@@ -141,6 +141,8 @@ def distribution_of_reading_times():
         if len(times_in_range) > 0:
             print('{}: {} articles'.format(time, len(times_in_range)))
 
+    print('Total: {} articles'.format(len(reading_times)))
+
 @click.command()
 @click.argument('search')
 @click.option('--state', '-s',
